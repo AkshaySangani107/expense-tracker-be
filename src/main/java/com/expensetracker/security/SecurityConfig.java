@@ -33,13 +33,22 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+
+                        // allow health endpoint
+                        .requestMatchers(
+                                "/health",
+                                "/api/health")
+                        .permitAll()
+
                         .requestMatchers(
                                 "/",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**")
                         .permitAll()
+
                         .anyRequest().authenticated())
-                .addFilterBefore(jwtFilter,
+                .addFilterBefore(
+                        jwtFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
